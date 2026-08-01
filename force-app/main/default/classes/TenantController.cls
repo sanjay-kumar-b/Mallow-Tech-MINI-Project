@@ -16,7 +16,7 @@ public with sharing class TenantController {
             pageNumber = 1;
         }
 
-        String query = 'SELECT Id, Name, Phone__c, Email__c FROM Tenant__c ORDER BY Name';
+        String query = 'SELECT Id, Name, Phone_Number__c, Email__c FROM Tenant__c ORDER BY Name';
 
         Database.Cursor cursor;
         if (String.isBlank(locatorParam)) {

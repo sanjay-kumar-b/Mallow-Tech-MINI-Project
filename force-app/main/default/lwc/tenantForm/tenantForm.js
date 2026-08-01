@@ -19,7 +19,7 @@ export default class TenantForm extends LightningElement {
 
     handleSave() {
         this.isSaving = true;
-        const tenant = { Name: this.name, Phone__c: this.phone, Email__c: this.email };
+        const tenant = { Name: this.name, Phone_Number__c: this.phone, Email__c: this.email };
 
         createTenant({ tenant })
             .then(() => {
