@@ -1,0 +1,52 @@
+<template>
+    <lightning-card title="New Property" icon-name="standard:realestate">
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <div class="slds-grid slds-gutters slds-wrap">
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-input label="Property Name" data-field="name" value={name} onchange={handleFieldChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-input label="Rent" type="number" step="0.01" required data-field="rent" value={rent} onchange={handleFieldChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-input label="Address" required data-field="address" value={address} onchange={handleFieldChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-input label="City" required data-field="city" value={city} onchange={handleFieldChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-input label="State" required data-field="state" value={state} onchange={handleFieldChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-input label="Postal Code" required data-field="postalCode" value={postalCode} onchange={handleFieldChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-input label="Country" required data-field="country" value={country} onchange={handleFieldChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-combobox label="Type" required options={typeOptions} data-field="type" value={type} onchange={handlePicklistChange}></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-combobox label="Furnishing Status" options={furnishingOptions} data-field="furnishingStatus" value={furnishingStatus} onchange={handlePicklistChange}></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-combobox label="Status" required options={statusOptions} data-field="status" value={status} onchange={handlePicklistChange}></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-1">
+                    <lightning-textarea label="Description" required data-field="description" value={description} onchange={handleFieldChange}></lightning-textarea>
+                </div>
+                <div class="slds-col slds-size_1-of-1">
+                    <label class="slds-form-element__label">Property Images (at least one required)</label>
+                    <input type="file" accept="image/*" multiple onchange={handleFileChange} />
+                    <template if:true={fileNames}>
+                        <p class="slds-text-body_small slds-text-color_success">Selected: {fileNames}</p>
+                    </template>
+                </div>
+            </div>
+
+            <div class="slds-m-top_medium">
+                <lightning-button variant="brand" label="Save Property" onclick={handleSave} disabled={isSaveDisabled}></lightning-button>
+            </div>
+        </div>
+    </lightning-card>
+</template>

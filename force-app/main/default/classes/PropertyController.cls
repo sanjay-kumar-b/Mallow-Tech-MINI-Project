@@ -17,6 +17,11 @@ public with sharing class PropertyController {
         @AuraEnabled public Integer pageNumber;
     }
 
+    public class PropertyImage {
+        @AuraEnabled public String base64Data;
+        @AuraEnabled public String fileName;
+    }
+
     private static final Integer PAGE_SIZE = 25;
 
     @AuraEnabled(cacheable=true)
@@ -88,21 +93,32 @@ public with sharing class PropertyController {
     }
 
     @AuraEnabled
-    public static Id createProperty(Property__c property, String base64Data, String fileName, String contentType) {
+    public static Id createProperty(Property__c property, List<PropertyImage> images) {
         
-        if (String.isBlank(base64Data) || String.isBlank(fileName)) {
+        if (images == null || images.isEmpty()) {
             throw new AuraHandledException('At least one property image is required to create a property.');
+        }
+
+        for (PropertyImage img : images) {
+            if (String.isBlank(img.base64Data) || String.isBlank(img.fileName)) {
+                throw new AuraHandledException('Each image must include file data and a file name.');
+            }
         }
 
         try {
             insert as user property;
 
-            ContentVersion cv = new ContentVersion();
-            cv.Title = fileName;
-            cv.PathOnClient = fileName;
-            cv.VersionData = EncodingUtil.base64Decode(base64Data);
-            cv.FirstPublishLocationId = property.Id; // links the file directly to the Property record
-            insert as user cv;
+            List<ContentVersion> versions = new List<ContentVersion>();
+
+            for (PropertyImage img : images) {
+                ContentVersion cv = new ContentVersion();
+                cv.Title = img.fileName;
+                cv.PathOnClient = img.fileName;
+                cv.VersionData = EncodingUtil.base64Decode(img.base64Data);
+                cv.FirstPublishLocationId = property.Id; // Linked to the property record
+                versions.add(cv);
+            }
+            insert as user versions;
 
             property.Has_Image__c = true;
             update as user property;

@@ -1,0 +1,12 @@
+<template>
+    <lightning-card title="Location" icon-name="standard:map">
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <template if:true={hasLocation}>
+                <lightning-map map-markers={mapMarkers} zoom-level="14" list-view="hidden"></lightning-map>
+            </template>
+            <template if:false={hasLocation}>
+                <p class="slds-text-color_weak">Location not yet geocoded. It will appear here shortly after the property is saved.</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>
