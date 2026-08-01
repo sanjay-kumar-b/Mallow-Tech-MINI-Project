@@ -1,0 +1,89 @@
+public with sharing class PropertyController {
+    public class PropertyFilter {
+        @AuraEnabled public Decimal minPrice;
+        @AuraEnabled public Decimal maxPrice;
+        @AuraEnabled public String availabilityStatus;
+        @AuraEnabled public String furnishingStatus;
+        @AuraEnabled public Decimal distanceKm;
+        @AuraEnabled public Decimal userLatitude;
+        @AuraEnabled public Decimal userLongitude;
+    }
+
+    public class PagedResult {
+        @AuraEnabled public String locator;
+        @AuraEnabled public List<Property__c> records;
+        @AuraEnabled public Integer totalRecords;
+        @AuraEnabled public Integer pageSize;
+        @AuraEnabled public Integer pageNumber;
+    }
+
+    private static final Integer PAGE_SIZE = 25;
+
+    @AuraEnabled(cacheable=true)
+    public static PagedResult getProperties(PropertyFilter filters, Integer pageNumber, String locatorParam) {
+
+        if (pageNumber == null || pageNumber < 1) {
+            pageNumber = 1;
+        }
+
+        List<String> conditions = new List<String>();
+    	Map<String,Object> binds = new Map<String,Object>();
+
+        if (filters != null) {
+
+            if (filters.minPrice != null) {
+                conditions.add('Rent__c >= :minPrice');
+                binds.put('minPrice', filters.minPrice);
+            }
+
+            if (filters.maxPrice != null) {
+                conditions.add('Rent__c <= :maxPrice');
+                binds.put('maxPrice', filters.maxPrice);
+            }
+
+            if (String.isNotBlank(filters.availabilityStatus)) {
+                conditions.add('Status__c = :availabilityStatus');
+                binds.put('availabilityStatus', filters.availabilityStatus);
+            }
+
+            if (String.isNotBlank(filters.furnishingStatus)) {
+                conditions.add('Furnishing_Status__c = :furnishingStatus');
+                binds.put('furnishingStatus', filters.furnishingStatus);
+            }
+
+            if (filters.distanceKm != null && filters.userLatitude != null && filters.userLongitude != null) {
+                
+                conditions.add('DISTANCE(Location__c, GEOLOCATION(:userLatitude, :userLongitude), \'km\') < :distanceKm');
+                
+                binds.put('userLatitude', filters.userLatitude);
+                binds.put('userLongitude', filters.userLongitude);
+                binds.put('distanceKm', filters.distanceKm);
+            }
+        }
+
+        String whereClause = conditions.isEmpty() ? '' : ' WHERE ' + String.join(conditions, ' AND ');
+
+        String query = 'SELECT Id, Name, Address__c, City__c, State__c, Postal_Code__c, Country__c, Type__c, Furnishing_Status__c, Status__c, Rent__c, Description__c, Location__c FROM Property__c' + whereClause + ' ORDER BY CreatedDate DESC';
+
+        Database.Cursor cursor;
+
+        if (String.isBlank(locatorParam)) {
+            cursor = Database.getCursorWithBinds(query, binds, AccessLevel.USER_MODE);
+        } else {
+            cursor = (Database.Cursor)JSON.deserialize(locatorParam, Database.Cursor.class);
+        }
+
+        Integer position = (pageNumber - 1) * PAGE_SIZE;
+        Integer remaining = cursor.getNumRecords() - position;
+        Integer fetchCount = Math.min(PAGE_SIZE, remaining);
+        List<Property__c> properties = fetchCount > 0 ? cursor.fetch(position, fetchCount) : new List<Property__c>();
+
+        PagedResult result = new PagedResult();
+        result.locator = JSON.serialize(cursor);
+        result.records = properties;
+        result.totalRecords = cursor.getNumRecords();
+        result.pageSize = PAGE_SIZE;
+        result.pageNumber = pageNumber;
+        return result;
+    }
+}
