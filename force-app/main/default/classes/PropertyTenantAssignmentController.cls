@@ -8,7 +8,7 @@ public with sharing class PropertyTenantAssignmentController {
         }
 
         try {
-            Property_Tenant__c assignment = new Property_Tenant__c(
+            Property_Tenant_Assignment__c assignment = new Property_Tenant_Assignment__c(
                 Property__c = propertyId,
                 Tenant__c = tenantId,
                 Assigned_Date__c = assignedDate != null ? assignedDate : Date.today()

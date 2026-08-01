@@ -20,7 +20,7 @@ public class TestDataFactory {
     public static Tenant__c buildTenant(String name) {
         return new Tenant__c(
             Name = name,
-            Phone__c = '9876543210',
+            Phone_Number__c = '9876543210',
             Email__c = name.deleteWhitespace().toLowerCase() + '@example.com'
         );
     }
@@ -28,7 +28,7 @@ public class TestDataFactory {
     public static Vendor__c buildVendor(String name) {
         return new Vendor__c(
             Name = name,
-            Phone__c = '9123456780',
+            Phone_Number__c = '9123456780',
             Email__c = name.deleteWhitespace().toLowerCase() + '@example.com'
         );
     }

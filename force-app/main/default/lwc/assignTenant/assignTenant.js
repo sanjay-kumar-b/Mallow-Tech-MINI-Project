@@ -1,6 +1,6 @@
 import { LightningElement, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import assignPropertyToTenant from '@salesforce/apex/PropertyTenantController.assignPropertyToTenant';
+import assignPropertyToTenant from '@salesforce/apex/PropertyTenantAssignmentController.assignPropertyToTenant';
 
 export default class AssignTenant extends LightningElement {
     @api recordId;

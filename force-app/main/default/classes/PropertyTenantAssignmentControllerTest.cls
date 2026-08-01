@@ -9,12 +9,12 @@ private class PropertyTenantAssignmentControllerTest {
         insert tenant;
 
         Test.startTest();
-        Id assignmentId = PropertyTenantController.assignPropertyToTenant(prop.Id, tenant.Id, Date.today());
+        Id assignmentId = PropertyTenantAssignmentController.assignPropertyToTenant(prop.Id, tenant.Id, Date.today());
         Test.stopTest();
 
         System.assertNotEquals(null, assignmentId);
 
-        Property_Tenant__c assignment = [SELECT Id, Property__c, Tenant__c, Assigned_Date__c FROM Property_Tenant__c WHERE Id = :assignmentId];
+        Property_Tenant_Assignment__c assignment = [SELECT Id, Property__c, Tenant__c, Assigned_Date__c FROM Property_Tenant_Assignment__c WHERE Id = :assignmentId];
         System.assertEquals(prop.Id, assignment.Property__c);
         System.assertEquals(tenant.Id, assignment.Tenant__c);
         System.assertEquals(Date.today(), assignment.Assigned_Date__c);
@@ -32,10 +32,10 @@ private class PropertyTenantAssignmentControllerTest {
         insert tenant;
 
         Test.startTest();
-        Id assignmentId = PropertyTenantController.assignPropertyToTenant(prop.Id, tenant.Id, null);
+        Id assignmentId = PropertyTenantAssignmentController.assignPropertyToTenant(prop.Id, tenant.Id, null);
         Test.stopTest();
 
-        Property_Tenant__c assignment = [SELECT Assigned_Date__c FROM Property_Tenant__c WHERE Id = :assignmentId];
+        Property_Tenant_Assignment__c assignment = [SELECT Assigned_Date__c FROM Property_Tenant_Assignment__c WHERE Id = :assignmentId];
         System.assertEquals(Date.today(), assignment.Assigned_Date__c);
     }
 
@@ -44,7 +44,7 @@ private class PropertyTenantAssignmentControllerTest {
         Boolean threw = false;
         Test.startTest();
         try {
-            PropertyTenantController.assignPropertyToTenant(null, null, Date.today());
+            PropertyTenantAssignmentController.assignPropertyToTenant(null, null, Date.today());
         } catch (AuraHandledException e) {
             threw = true;
         }
