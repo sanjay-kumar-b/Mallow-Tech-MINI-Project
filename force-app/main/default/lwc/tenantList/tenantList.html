@@ -1,0 +1,39 @@
+<template>
+    <lightning-card title="Tenants" icon-name="standard:contact">
+        <div class="slds-p-horizontal_medium slds-p-bottom_small">
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </template>
+            <template if:true={errorMessage}>
+                <div class="slds-text-color_error slds-m-bottom_small">{errorMessage}</div>
+            </template>
+
+            <table class="slds-table slds-table_bordered slds-table_striped">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={tenants} for:item="tenant">
+                        <tr key={tenant.Id}>
+                            <td><a href={tenant.Id}>{tenant.Name}</a></td>
+                            <td>{tenant.Phone__c}</td>
+                            <td>{tenant.Email__c}</td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+
+            <div class="slds-grid slds-grid_align-spread slds-m-top_small slds-p-top_small">
+                <div>{pageSummary}</div>
+                <div>
+                    <lightning-button label="Previous" onclick={handlePrevious} disabled={isFirstPage} class="slds-m-right_x-small"></lightning-button>
+                    <lightning-button label="Next" onclick={handleNext} disabled={isLastPage}></lightning-button>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

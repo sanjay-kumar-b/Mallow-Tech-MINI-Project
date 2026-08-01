@@ -1,0 +1,12 @@
+<template>
+    <lightning-card title="New Tenant" icon-name="standard:contact">
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <lightning-input label="Name" required data-field="name" value={name} onchange={handleFieldChange}></lightning-input>
+            <lightning-input type="tel" label="Phone Number" data-field="phone" value={phone} onchange={handleFieldChange}></lightning-input>
+            <lightning-input type="email" label="Email" data-field="email" value={email} onchange={handleFieldChange}></lightning-input>
+            <div class="slds-m-top_medium">
+                <lightning-button variant="brand" label="Save Tenant" onclick={handleSave} disabled={isSaveDisabled}></lightning-button>
+            </div>
+        </div>
+    </lightning-card>
+</template>

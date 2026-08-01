@@ -1,0 +1,29 @@
+<template>
+    <lightning-card title="Assign Property to Tenant" icon-name="standard:apply">
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <template if:false={isPropertyPreselected}>
+                <lightning-record-picker
+                    label="Property"
+                    placeholder="Search properties..."
+                    object-api-name="Property__c"
+                    onchange={handlePropertyChange}>
+                </lightning-record-picker>
+            </template>
+
+            <template if:false={isTenantPreselected}>
+                <lightning-record-picker
+                    label="Tenant"
+                    placeholder="Search tenants..."
+                    object-api-name="Tenant__c"
+                    onchange={handleTenantChange}>
+                </lightning-record-picker>
+            </template>
+
+            <lightning-input type="date" label="Assigned Date" value={assignedDate} onchange={handleDateChange}></lightning-input>
+
+            <div class="slds-m-top_medium">
+                <lightning-button variant="brand" label="Assign" onclick={handleAssign} disabled={isSaveDisabled}></lightning-button>
+            </div>
+        </div>
+    </lightning-card>
+</template>
