@@ -1,0 +1,27 @@
+<template>
+    <lightning-card title="New Lease Agreement" icon-name="standard:contract">
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <template if:false={isPropertyPreselected}>
+                <lightning-record-picker
+                    label="Property"
+                    placeholder="Search properties..."
+                    object-api-name="Property__c"
+                    onchange={handlePropertyChange}>
+                </lightning-record-picker>
+            </template>
+            <lightning-record-picker
+                label="Tenant"
+                placeholder="Search tenants..."
+                object-api-name="Tenant__c"
+                onchange={handleTenantChange}>
+            </lightning-record-picker>
+            <lightning-textarea label="Terms" data-field="terms" value={terms} onchange={handleFieldChange}></lightning-textarea>
+            <lightning-input type="number" step="0.01" label="Agreed Monthly Rent" required data-field="agreedMonthlyRent" value={agreedMonthlyRent} onchange={handleFieldChange}></lightning-input>
+            <lightning-input type="date" label="Start Date" required data-field="startDate" value={startDate} onchange={handleFieldChange}></lightning-input>
+            <lightning-input type="date" label="End Date" required data-field="endDate" value={endDate} onchange={handleFieldChange}></lightning-input>
+            <div class="slds-m-top_medium">
+                <lightning-button variant="brand" label="Save Lease Agreement" onclick={handleSave} disabled={isSaveDisabled}></lightning-button>
+            </div>
+        </div>
+    </lightning-card>
+</template>

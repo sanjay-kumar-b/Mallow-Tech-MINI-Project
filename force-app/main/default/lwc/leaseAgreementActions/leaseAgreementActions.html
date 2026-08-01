@@ -1,0 +1,21 @@
+<template>
+    <lightning-card title="Lease Agreement Actions" icon-name="standard:contract">
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+            <lightning-button
+                variant="brand"
+                label="Download PDF"
+                icon-name="utility:download"
+                onclick={handleDownloadPdf}
+                class="slds-m-right_small"
+                disabled={isBusy}>
+            </lightning-button>
+            <lightning-button
+                variant="neutral"
+                label="Send PDF to Tenant"
+                icon-name="utility:email"
+                onclick={handleSendPdf}
+                disabled={isBusy}>
+            </lightning-button>
+        </div>
+    </lightning-card>
+</template>

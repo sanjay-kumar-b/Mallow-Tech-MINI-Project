@@ -1,0 +1,37 @@
+<template>
+    <lightning-card title="Lease Agreements" icon-name="standard:contract">
+        <div class="slds-p-horizontal_medium slds-p-bottom_small">
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </template>
+            <template if:true={errorMessage}>
+                <div class="slds-text-color_error slds-m-bottom_small">{errorMessage}</div>
+            </template>
+
+            <table class="slds-table slds-table_bordered slds-table_striped">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th>Name</th>
+                        <th>Tenant</th>
+                        <th>Monthly Rent</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={leases} for:item="lease">
+                        <tr key={lease.Id}>
+                            <td><a href={lease.Id}>{lease.Name}</a></td>
+                            <td>{lease.Tenant__r.Name}</td>
+                            <td>
+                                <lightning-formatted-number value={lease.Agreed_Monthly_Rent__c} format-style="currency"></lightning-formatted-number>
+                            </td>
+                            <td><lightning-formatted-date-time value={lease.Start_Date__c}></lightning-formatted-date-time></td>
+                            <td><lightning-formatted-date-time value={lease.End_Date__c}></lightning-formatted-date-time></td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </lightning-card>
+</template>
