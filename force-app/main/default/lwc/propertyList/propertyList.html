@@ -1,0 +1,79 @@
+<template>
+    <lightning-card title="Properties" icon-name="standard:realestate">
+        <div class="slds-p-horizontal_medium slds-p-bottom_small">
+
+            <div class="slds-grid slds-gutters slds-wrap slds-m-bottom_small">
+                <div class="slds-col slds-size_1-of-6">
+                    <lightning-input type="number" label="Min Price" onchange={handleMinPrice}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-6">
+                    <lightning-input type="number" label="Max Price" onchange={handleMaxPrice}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-6">
+                    <lightning-combobox label="Availability" options={statusOptions} value={availabilityStatus} onchange={handleStatusChange}></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-6">
+                    <lightning-combobox label="Furnishing" options={furnishingOptions} value={furnishingStatus} onchange={handleFurnishingChange}></lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-6">
+                    <lightning-input type="number" label="Distance (km)" onchange={handleDistanceChange}></lightning-input>
+                    <lightning-button variant="base" label="Use my location" onclick={handleUseMyLocation} class="slds-m-top_xx-small"></lightning-button>
+                    <template if:true={geoError}>
+                        <p class="slds-text-color_error slds-text-body_small">{geoError}</p>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_1-of-6 slds-align-bottom">
+                    <lightning-button variant="brand" label="Apply Filters" onclick={handleApplyFilters} class="slds-m-right_x-small"></lightning-button>
+                    <lightning-button variant="neutral" label="Clear" onclick={handleClearFilters}></lightning-button>
+                </div>
+            </div>
+
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </template>
+
+            <template if:true={errorMessage}>
+                <div class="slds-text-color_error slds-m-bottom_small">{errorMessage}</div>
+            </template>
+
+            <table class="slds-table slds-table_bordered slds-table_striped">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>City</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Furnishing</th>
+                        <th>Rent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={properties} for:item="prop">
+                        <tr key={prop.Id}>
+                            <td>
+                                <a href={prop.Id} data-record-id={prop.Id}>{prop.Name}</a>
+                            </td>
+                            <td>{prop.Address__c}</td>
+                            <td>{prop.City__c}</td>
+                            <td>{prop.Type__c}</td>
+                            <td>{prop.Status__c}</td>
+                            <td>{prop.Furnishing_Status__c}</td>
+                            <td>
+                                <lightning-formatted-number value={prop.Rent__c} format-style="currency"></lightning-formatted-number>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+
+            <div class="slds-grid slds-grid_align-spread slds-m-top_small slds-p-top_small">
+                <div>{pageSummary}</div>
+                <div>
+                    <lightning-button label="Previous" onclick={handlePrevious} disabled={isFirstPage} class="slds-m-right_x-small"></lightning-button>
+                    <lightning-button label="Next" onclick={handleNext} disabled={isLastPage}></lightning-button>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>
