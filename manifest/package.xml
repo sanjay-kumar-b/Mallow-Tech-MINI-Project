@@ -1,36 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
-        <members>*</members>
-        <name>ApexClass</name>
+        <members>Property__c</members>
+        <members>Tenant__c</members>
+        <members>Property_Tenant_Assignment__c</members>
+        <members>Lease_Agreement__c</members>
+        <members>Vendor__c</members>
+        <members>Maintenance_Request__c</members>
+        <name>CustomObject</name>
     </types>
     <types>
-        <members>*</members>
-        <name>ApexComponent</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>ApexPage</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>ApexTestSuite</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>ApexTrigger</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>AuraDefinitionBundle</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>LightningComponentBundle</name>
-    </types>
-    <types>
-        <members>*</members>
+        <members>jsPDF</members>
         <name>StaticResource</name>
+    </types>
+    <types>
+        <members>Nominatim_Geocoding</members>
+        <name>RemoteSiteSetting</name>
+    </types>
+    <types>
+        <members>Real_Estate_Property_Management</members>
+        <name>CustomApplication</name>
     </types>
     <version>67.0</version>
 </Package>
