@@ -86,4 +86,30 @@ public with sharing class PropertyController {
         result.pageNumber = pageNumber;
         return result;
     }
+
+    @AuraEnabled
+    public static Id createProperty(Property__c property, String base64Data, String fileName, String contentType) {
+        
+        if (String.isBlank(base64Data) || String.isBlank(fileName)) {
+            throw new AuraHandledException('At least one property image is required to create a property.');
+        }
+
+        try {
+            insert as user property;
+
+            ContentVersion cv = new ContentVersion();
+            cv.Title = fileName;
+            cv.PathOnClient = fileName;
+            cv.VersionData = EncodingUtil.base64Decode(base64Data);
+            cv.FirstPublishLocationId = property.Id; // links the file directly to the Property record
+            insert as user cv;
+
+            property.Has_Image__c = true;
+            update as user property;
+
+            return property.Id;
+        } catch (DmlException e) {
+            throw new AuraHandledException('Unable to create property: ' + e.getDmlMessage(0));
+        }
+    }
 }
