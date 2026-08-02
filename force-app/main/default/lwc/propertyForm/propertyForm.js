@@ -61,6 +61,7 @@ export default class PropertyForm extends LightningElement {
     }
 
     handleFileChange(event) {
+        const fileInput = event.target;
         const files = Array.from(event.target.files || []);
 
         if (!files.length) {
@@ -71,7 +72,7 @@ export default class PropertyForm extends LightningElement {
             (file) =>
                 new Promise((resolve, reject) => {
                     const reader = new FileReader();
-                    reader.onload = () => resolve({ fileName: file.name, base64Data: reader.result.split(',')[1], previewUrl: reader.result });
+                    reader.onload = () => resolve({ id: Date.now() + Math.random(), fileName: file.name, base64Data: reader.result.split(',')[1], previewUrl: reader.result });
                     reader.onerror = reject;
                     reader.readAsDataURL(file);
                 })
@@ -79,7 +80,9 @@ export default class PropertyForm extends LightningElement {
 
         Promise.all(readers).then((results) => {
             this.images = [...this.images, ...results];
-            event.target.value = '';
+            if (fileInput) {
+                fileInput.value = '';
+            }
         })
         .catch(error => {
             console.log('Error:', JSON.stringify(error));
