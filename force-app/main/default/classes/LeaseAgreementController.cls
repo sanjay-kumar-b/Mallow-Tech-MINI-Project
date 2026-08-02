@@ -1,6 +1,6 @@
 public with sharing class LeaseAgreementController {
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<Lease_Agreement__c> getLeaseAgreements(Id propertyId) {
         if (propertyId != null) {
             return [SELECT Id, Name, Property__c, Tenant__c, Tenant__r.Name, Tenant__r.Email__c, Terms__c, Agreed_Monthly_Rent__c, Start_Date__c, End_Date__c

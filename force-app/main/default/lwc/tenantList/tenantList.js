@@ -1,5 +1,7 @@
-import { LightningElement, track, api } from 'lwc';
+import { LightningElement, wire, track, api } from 'lwc';
 import getTenants from '@salesforce/apex/TenantController.getTenants';
+import { subscribe, unsubscribe, MessageContext } from 'lightning/messageService';
+import RECORD_REFRESH_CHANNEL from '@salesforce/messageChannel/RecordRefresh__c';
 
 export default class TenantList extends LightningElement {
     @track tenants = [];
@@ -10,8 +12,33 @@ export default class TenantList extends LightningElement {
     isLoading = false;
     errorMessage;
 
+    subscription = null;
+
+    @wire(MessageContext)
+    messageContext;
+
     connectedCallback() {
+        this.subscription = subscribe(
+            this.messageContext,
+            RECORD_REFRESH_CHANNEL,
+            (message) => {
+                console.log('Received Message from another component' + message);
+                this.handleMessage(message);
+            }
+        );
+
         this.loadTenants({ resetLocator: true });
+    }
+
+    disconnectedCallback() {
+        if (this.subscription) {
+            unsubscribe(this.subscription);
+            this.subscription = null;
+        }
+    }
+
+    handleMessage(message) {
+        this.loadTenants({ resetLocator: message.resetLocator });
     }
 
     get totalPages() {

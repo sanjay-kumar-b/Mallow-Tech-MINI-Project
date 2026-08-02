@@ -1,6 +1,8 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import createLeaseAgreement from '@salesforce/apex/LeaseAgreementController.createLeaseAgreement';
+import { publish, MessageContext } from 'lightning/messageService';
+import RECORD_REFRESH_CHANNEL from '@salesforce/messageChannel/RecordRefresh__c';
 
 export default class LeaseAgreementForm extends LightningElement {
     @api recordId;
@@ -12,6 +14,9 @@ export default class LeaseAgreementForm extends LightningElement {
     startDate;
     endDate;
     isSaving = false;
+
+    @wire(MessageContext)
+    messageContext;
 
     connectedCallback() {
         if (this.recordId) {
@@ -56,6 +61,10 @@ export default class LeaseAgreementForm extends LightningElement {
                 this.showToast('Success', 'Lease agreement created.', 'success');
                 this.dispatchEvent(new CustomEvent('created'));
                 this.resetForm();
+
+                publish(this.messageContext, RECORD_REFRESH_CHANNEL, {
+                    resetLocator : true
+                });
             })
             .catch((error) => {
                 this.showToast('Error', error?.body?.message || 'Failed to create lease agreement.', 'error');

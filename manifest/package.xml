@@ -30,5 +30,15 @@
         <members>Lease_Agreement_Workspace</members>
         <name>FlexiPage</name>
     </types>
+    <types>
+        <members>Public_Folder/Leases_expiring_in_30_days_3aE</members>
+        <members>Public_Folder/Maintenance_requests_by_status_c7d</members>
+        <members>Public_Folder/Occupancy_rate</members>
+        <name>Report</name>
+    </types>
+    <types>
+        <members>Public_Folder/QUaIyuZeTCncsAYgXLWtqmCOdhbkDI</members>
+        <name>Dashboard</name>
+    </types>
     <version>67.0</version>
 </Package>

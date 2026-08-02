@@ -10,7 +10,7 @@ public with sharing class TenantController {
 
     private static final Integer PAGE_SIZE = 25;
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static PagedResult getTenants(Integer pageNumber, String locatorParam) {
         if (pageNumber == null || pageNumber < 1) {
             pageNumber = 1;

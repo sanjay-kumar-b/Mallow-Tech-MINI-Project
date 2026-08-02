@@ -27,7 +27,7 @@ export default class LeaseAgreementActions extends LightningElement {
         if (this.jsPdfLoaded) {
             return;
         }
-        loadScript(this, jsPDFResource)
+        loadScript(this, jsPDFResource + '/jspdf.umd.min.js')
             .then(() => {
                 this.jsPdfLoaded = true;
             })

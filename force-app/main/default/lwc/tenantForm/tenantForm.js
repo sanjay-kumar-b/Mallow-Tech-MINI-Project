@@ -1,12 +1,17 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import createTenant from '@salesforce/apex/TenantController.createTenant';
+import { publish, MessageContext } from 'lightning/messageService';
+import RECORD_REFRESH_CHANNEL from '@salesforce/messageChannel/RecordRefresh__c';
 
 export default class TenantForm extends LightningElement {
     name;
     phone;
     email;
     isSaving = false;
+
+    @wire(MessageContext)
+    messageContext;
 
     get isSaveDisabled() {
         return this.isSaving || !this.name;
@@ -28,7 +33,9 @@ export default class TenantForm extends LightningElement {
                 this.phone = undefined;
                 this.email = undefined;
 
-                this.dispatchEvent(new CustomEvent('created'));
+                publish(this.messageContext, RECORD_REFRESH_CHANNEL, {
+                    resetLocator : true
+                });
             })
             .catch((error) => {
                 this.showToast('Error', error?.body?.message || 'Failed to create tenant.', 'error');
