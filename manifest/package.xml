@@ -21,5 +21,14 @@
         <members>Real_Estate_Property_Management</members>
         <name>CustomApplication</name>
     </types>
+    <types>
+        <members>Property_Record_Page</members>
+        <members>Property_Workspace</members>
+        <members>Tenant_Record_Page</members>
+        <members>Tenant_Workspace</members>
+        <members>Lease_Agreement_Record_Page</members>
+        <members>Lease_Agreement_Workspace</members>
+        <name>FlexiPage</name>
+    </types>
     <version>67.0</version>
 </Package>

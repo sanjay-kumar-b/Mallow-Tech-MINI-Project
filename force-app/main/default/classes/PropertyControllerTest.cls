@@ -17,8 +17,8 @@ private class PropertyControllerTest {
     @isTest
     static void testGetPropertiesPagination() {
         Test.startTest();
-        PropertyController.PagedResult page1 = PropertyController.getProperties(null, 1, null);
-        PropertyController.PagedResult page2 = PropertyController.getProperties(null, 2, page1.locator);
+        PropertyController.PagedResult page1 = PropertyController.getProperties('{}', 1, null);
+        PropertyController.PagedResult page2 = PropertyController.getProperties('{}', 2, page1.locator);
         Test.stopTest();
 
         System.assertNotEquals(null, page1.locator);
@@ -36,8 +36,10 @@ private class PropertyControllerTest {
         filter.availabilityStatus = 'Available';
         filter.furnishingStatus = 'Furnished';
 
+        String filtersJson = JSON.serialize(filter);
+
         Test.startTest();
-        PropertyController.PagedResult result = PropertyController.getProperties(filter, 1, null);
+        PropertyController.PagedResult result = PropertyController.getProperties(filtersJson, 1, null);
         Test.stopTest();
 
         for (Property__c p : result.records) {
@@ -50,8 +52,8 @@ private class PropertyControllerTest {
     @isTest
     static void testGetPropertiesEmptyPageBeyondLastRecord() {
         Test.startTest();
-        PropertyController.PagedResult page1 = PropertyController.getProperties(null, 1, null);
-        PropertyController.PagedResult pageBeyond = PropertyController.getProperties(null, 10, page1.locator);
+        PropertyController.PagedResult page1 = PropertyController.getProperties('{}', 1, null);
+        PropertyController.PagedResult pageBeyond = PropertyController.getProperties('{}', 10, page1.locator);
         Test.stopTest();
 
         System.assertEquals(0, pageBeyond.records.size());
@@ -69,8 +71,12 @@ private class PropertyControllerTest {
 
         Test.setMock(HttpCalloutMock.class, new GeocodeMockSuccess());
 
+        List<PropertyController.PropertyImage> images = new List<PropertyController.PropertyImage>{ img1, img2 };
+
+        String imagesJson = JSON.serialize(images);
+
         Test.startTest();
-        Id newId = PropertyController.createProperty(newProp, new List<PropertyController.PropertyImage>{ img1, img2 });
+        Id newId = PropertyController.createProperty(newProp, imagesJson);
         Test.stopTest();
 
         Property__c inserted = [SELECT Id, Has_Image__c FROM Property__c WHERE Id = :newId];
@@ -86,13 +92,29 @@ private class PropertyControllerTest {
         Boolean threw = false;
 
         Test.startTest();
+        String imagesJson = JSON.serialize(new List<PropertyController.PropertyImage>());
         try {
-            PropertyController.createProperty(newProp, new List<PropertyController.PropertyImage>());
+            PropertyController.createProperty(newProp, imagesJson);
         } catch (AuraHandledException e) {
             threw = true;
         }
         Test.stopTest();
 
         System.assertEquals(true, threw);
+    }
+
+    @isTest
+    static void testGetPropertyLocation() {
+        Property__c p = [SELECT Id, Name, Location__Latitude__s, Location__Longitude__s
+                        FROM Property__c
+                        LIMIT 1];
+
+        Test.startTest();
+        PropertyController.PropertyWrapper wrapper = PropertyController.getPropertyLocation(p.Id);
+        Test.stopTest();
+
+        System.assertEquals(p.Name, wrapper.name);
+        System.assertEquals(p.Location__Latitude__s, wrapper.latitude);
+        System.assertEquals(p.Location__Longitude__s, wrapper.longitude);
     }
 }
