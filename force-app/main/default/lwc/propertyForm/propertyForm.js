@@ -1,6 +1,8 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import createProperty from '@salesforce/apex/PropertyController.createProperty';
+import { publish, MessageContext } from 'lightning/messageService';
+import RECORD_REFRESH_CHANNEL from '@salesforce/messageChannel/RecordRefresh__c';
 
 const TYPE_OPTIONS = [
     { label: 'Residential', value: 'Residential' },
@@ -37,6 +39,9 @@ export default class PropertyForm extends LightningElement {
 
     images = [];
     isSaving = false;
+
+    @wire(MessageContext)
+    messageContext;
 
     get hasImages() {
         return this.images.length > 0;
@@ -131,10 +136,21 @@ export default class PropertyForm extends LightningElement {
             Description__c: this.description
         };
 
-        createProperty({ property, images: this.images })
+        console.log('Images:', JSON.stringify(this.images));
+        console.log('Images object:', this.images);
+
+        const images = this.images.map(img => ({
+            fileName: img.fileName,
+            base64Data: img.base64Data
+        }));
+
+        createProperty({ property, imagesJson: JSON.stringify(images) })
             .then(() => {
                 this.showToast('Success', 'Property created successfully.', 'success');
                 this.resetForm();
+                publish(this.messageContext, RECORD_REFRESH_CHANNEL, {
+                    resetLocator: true
+                });
             })
             .catch((error) => {
                 this.showToast('Error', error?.body?.message || 'Failed to create property.', 'error');

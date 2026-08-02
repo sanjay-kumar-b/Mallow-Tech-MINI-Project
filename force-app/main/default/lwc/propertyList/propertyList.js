@@ -1,5 +1,7 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import getProperties from '@salesforce/apex/PropertyController.getProperties';
+import { subscribe, unsubscribe, MessageContext } from 'lightning/messageService';
+import RECORD_REFRESH_CHANNEL from '@salesforce/messageChannel/RecordRefresh__c';
 
 const STATUS_OPTIONS = [
     { label: 'All', value: '' },
@@ -35,8 +37,33 @@ export default class PropertyList extends LightningElement {
     errorMessage;
     geoError;
 
+    subscription = null;
+
+    @wire(MessageContext)
+    messageContext;
+
     connectedCallback() {
+        this.subscription = subscribe(
+            this.messageContext,
+            RECORD_REFRESH_CHANNEL,
+            (message) => {
+                console.log('Received Message from another component');
+                this.handleMessage(message);
+            }
+        );
+
         this.loadProperties({ resetLocator: true });
+    }
+
+    disconnectedCallback() {
+        if (this.subscription) {
+            unsubscribe(this.subscription);
+            this.subscription = null;
+        }
+    }
+
+    handleMessage(message) {
+        this.loadProperties({ resetLocator: message.resetLocator });
     }
 
     get totalPages() {
@@ -144,7 +171,9 @@ export default class PropertyList extends LightningElement {
 
         const locatorParam = resetLocator ? undefined : this.locator;
 
-        getProperties({ filters, pageNumber: this.pageNumber, locatorParam })
+        console.log('Filter from LWC: ' + JSON.stringify(filters));
+
+        getProperties({ filtersJson: JSON.stringify(filters), pageNumber: this.pageNumber, locatorParam: locatorParam })
             .then((result) => {
                 this.properties = result.records;
                 this.totalRecords = result.totalRecords;

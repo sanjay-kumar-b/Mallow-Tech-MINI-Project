@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>Record Refresh</masterLabel>
+    <isExposed>true</isExposed>
+    <description>Notify components when a record is updated</description>
+
+    <lightningMessageFields>
+        <fieldName>resetLocator</fieldName>
+        <description>Database Cursor Locator Param</description>
+    </lightningMessageFields>
+</LightningMessageChannel>

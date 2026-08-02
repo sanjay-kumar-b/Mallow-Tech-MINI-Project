@@ -22,10 +22,18 @@ public with sharing class PropertyController {
         @AuraEnabled public String fileName;
     }
 
+    public class PropertyWrapper {
+        @AuraEnabled public String name;
+        @AuraEnabled public Decimal latitude;
+        @AuraEnabled public Decimal longitude;
+    }
+
     private static final Integer PAGE_SIZE = 25;
 
-    @AuraEnabled(cacheable=true)
-    public static PagedResult getProperties(PropertyFilter filters, Integer pageNumber, String locatorParam) {
+    @AuraEnabled
+    public static PagedResult getProperties(String filtersJson, Integer pageNumber, String locatorParam) {
+
+        PropertyFilter filters = (PropertyFilter)JSON.deserialize(filtersJson, PropertyFilter.class);
 
         if (pageNumber == null || pageNumber < 1) {
             pageNumber = 1;
@@ -33,6 +41,8 @@ public with sharing class PropertyController {
 
         List<String> conditions = new List<String>();
     	Map<String,Object> binds = new Map<String,Object>();
+
+        System.debug('Filters: ' + filters);
 
         if (filters != null) {
 
@@ -92,11 +102,33 @@ public with sharing class PropertyController {
         return result;
     }
 
+    @AuraEnabled(cacheable=true)
+    public static PropertyWrapper getPropertyLocation(Id propertyId) {
+        Property__c property = [SELECT Id, Name, Location__Latitude__s, Location__Longitude__s
+                                FROM Property__c
+                                WHERE Id = :propertyId
+                                LIMIT 1];
+
+        PropertyWrapper wrapper = new PropertyWrapper();
+        wrapper.name = property.Name;
+        wrapper.latitude = property.Location__Latitude__s;
+        wrapper.longitude = property.Location__Longitude__s;
+
+        return wrapper;
+    }
+
     @AuraEnabled
-    public static Id createProperty(Property__c property, List<PropertyImage> images) {
+    public static Id createProperty(Property__c property, String imagesJson) {
+
+        List<PropertyImage> images = (List<PropertyImage>)JSON.deserialize(imagesJson, List<PropertyImage>.class);
         
         if (images == null || images.isEmpty()) {
             throw new AuraHandledException('At least one property image is required to create a property.');
+        }
+
+        for (PropertyImage img : images) {
+            System.debug('fileName=' + img.fileName);
+            System.debug('base64 length=' + (img.base64Data == null ? 'null' : String.valueOf(img.base64Data.length())));
         }
 
         for (PropertyImage img : images) {
