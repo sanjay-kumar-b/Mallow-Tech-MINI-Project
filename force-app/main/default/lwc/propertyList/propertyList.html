@@ -4,10 +4,10 @@
 
             <div class="slds-grid slds-gutters slds-wrap slds-m-bottom_small">
                 <div class="slds-col slds-size_1-of-6">
-                    <lightning-input type="number" label="Min Price" onchange={handleMinPrice}></lightning-input>
+                    <lightning-input type="number" label="Min Price" value={minPrice} onchange={handleMinPrice}></lightning-input>
                 </div>
                 <div class="slds-col slds-size_1-of-6">
-                    <lightning-input type="number" label="Max Price" onchange={handleMaxPrice}></lightning-input>
+                    <lightning-input type="number" label="Max Price" value={maxPrice} onchange={handleMaxPrice}></lightning-input>
                 </div>
                 <div class="slds-col slds-size_1-of-6">
                     <lightning-combobox label="Availability" options={statusOptions} value={availabilityStatus} onchange={handleStatusChange}></lightning-combobox>
@@ -16,7 +16,22 @@
                     <lightning-combobox label="Furnishing" options={furnishingOptions} value={furnishingStatus} onchange={handleFurnishingChange}></lightning-combobox>
                 </div>
                 <div class="slds-col slds-size_1-of-6">
-                    <lightning-input type="number" label="Distance (km)" onchange={handleDistanceChange}></lightning-input>
+                    <lightning-input type="number" label="Distance (km)" value={distanceKm} onchange={handleDistanceChange}></lightning-input>
+                    <div>
+                        <label class="slds-form-element__label">Latitude</label>
+                        <lightning-formatted-number
+                            value={userLatitude}
+                            maximum-fraction-digits="6">
+                        </lightning-formatted-number>
+                    </div>
+
+                    <div>
+                        <label class="slds-form-element__label">Longitude</label>
+                        <lightning-formatted-number
+                            value={userLongitude}
+                            maximum-fraction-digits="6">
+                        </lightning-formatted-number>
+                    </div>
                     <lightning-button variant="base" label="Use my location" onclick={handleUseMyLocation} class="slds-m-top_xx-small"></lightning-button>
                     <template if:true={geoError}>
                         <p class="slds-text-color_error slds-text-body_small">{geoError}</p>

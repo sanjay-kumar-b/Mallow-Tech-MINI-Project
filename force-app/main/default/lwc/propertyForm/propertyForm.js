@@ -77,6 +77,10 @@ export default class PropertyForm extends LightningElement {
         });
     }
 
+    openFilePicker() {
+        this.template.querySelector('.hidden-file-input').click();
+    }
+
     handleSave() {
         if (!this.images.length) {
             this.showToast('Error', 'Please attach at least one property image before saving.', 'error');

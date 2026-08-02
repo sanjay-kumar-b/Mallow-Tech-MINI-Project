@@ -36,10 +36,37 @@
                     <lightning-textarea label="Description" required data-field="description" value={description} onchange={handleFieldChange}></lightning-textarea>
                 </div>
                 <div class="slds-col slds-size_1-of-1">
-                    <label class="slds-form-element__label">Property Images (at least one required)</label>
-                    <input type="file" accept="image/*" multiple onchange={handleFileChange} />
+                    <div class="slds-grid slds-grid_vertical-align-center slds-m-top_small">
+                        <label class="slds-form-element__label slds-m-bottom_none">
+                            Property Images
+                            <abbr class="slds-required" title="required">*</abbr>
+                        </label>
+
+                        <lightning-button
+                            class="slds-m-left_small"
+                            label="Upload Images"
+                            icon-name="utility:upload"
+                            variant="brand"
+                            onclick={openFilePicker}>
+                        </lightning-button>
+                    </div>
+
+                    <input
+                        class="hidden-file-input"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onchange={handleFileChange} />
+
                     <template if:true={fileNames}>
-                        <p class="slds-text-body_small slds-text-color_success">Selected: {fileNames}</p>
+                        <div class="slds-m-top_small">
+                            <lightning-icon
+                                icon-name="utility:success"
+                                size="x-small"
+                                class="slds-m-right_x-small">
+                            </lightning-icon>
+                            <span>{fileNames}</span>
+                        </div>
                     </template>
                 </div>
             </div>
