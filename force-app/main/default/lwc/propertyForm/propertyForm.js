@@ -38,6 +38,10 @@ export default class PropertyForm extends LightningElement {
     images = [];
     isSaving = false;
 
+    get hasImages() {
+        return this.images.length > 0;
+    }
+
     get isSaveDisabled() {
         return this.isSaving || this.images.length === 0;
     }
@@ -58,6 +62,7 @@ export default class PropertyForm extends LightningElement {
 
     handleFileChange(event) {
         const files = Array.from(event.target.files || []);
+
         if (!files.length) {
             return;
         }
@@ -66,15 +71,36 @@ export default class PropertyForm extends LightningElement {
             (file) =>
                 new Promise((resolve, reject) => {
                     const reader = new FileReader();
-                    reader.onload = () => resolve({ fileName: file.name, base64Data: reader.result.split(',')[1] });
+                    reader.onload = () => resolve({ fileName: file.name, base64Data: reader.result.split(',')[1], previewUrl: reader.result });
                     reader.onerror = reject;
                     reader.readAsDataURL(file);
                 })
         );
 
         Promise.all(readers).then((results) => {
-            this.images = results;
+            this.images = [...this.images, ...results];
+            event.target.value = '';
+        })
+        .catch(error => {
+            console.log('Error:', JSON.stringify(error));
+            console.log('Error object:', error);
+            console.log('Message:', error?.message);
+            console.log('Stack:', error?.stack);
+            this.showToast('Error', 'Failed to read selected image(s).', 'error');
         });
+    }
+
+    removeImage(event) {
+        const index = Number(event.currentTarget.dataset.index);
+
+        this.images = this.images.filter((img, i) => i !== index);
+
+        if (this.images.length === 0) {
+            const fileInput = this.template.querySelector('.hidden-file-input');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+        }
     }
 
     openFilePicker() {
